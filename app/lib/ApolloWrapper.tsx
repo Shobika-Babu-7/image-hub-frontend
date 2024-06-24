@@ -22,7 +22,7 @@ const authLink = setContext((_, { headers }) => {
 });
 
 const uploadLink = createUploadLink({ 
-  uri: "http://localhost:3000/graphql",
+  uri: process.env.NEXT_PUBLIC_GRAPHQL_URL,
   headers: {
     "Apollo-Require-Preflight": "true"
   }
