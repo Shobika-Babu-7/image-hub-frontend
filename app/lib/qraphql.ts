@@ -6,7 +6,8 @@ export const CREATE_ACCOUNT = gql`
         name
         email
         accessToken
-        _id
+        _id,
+        authEnabled
     }
   }
 `;
@@ -17,7 +18,27 @@ export const LOGIN_ACCOUNT = gql`
         name
         email
         accessToken
-        _id
+        _id,
+        authEnabled
+    }
+  }
+`;
+
+export const GENERATE_QR = gql`
+  mutation generateQrCode($userId: String!) {
+    generateQrCode(userId: $userId) {
+      qrCodeUrl
+    }
+  }
+`;
+
+export const VERIFY_ACCOUNT = gql`
+  mutation verifyToken($code: String!, $userId: String!) {
+    verifyToken(code: $code, userId: $userId) {
+      tokenVerified,
+      user {
+        authEnabled
+      }
     }
   }
 `;

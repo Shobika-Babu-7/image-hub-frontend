@@ -12,16 +12,35 @@ export default function Dashboard() {
 
     const router = useRouter()
     const { register, handleSubmit, formState: { errors } } = useForm();
-    const [ getImages, {data, refetch} ] = useLazyQuery(GET_IMAGES);
+    const [ getImages, {data, error, refetch} ] = useLazyQuery(GET_IMAGES);
     const [ uploadImageMutation, {loading: uploading} ] = useMutation(UPLOAD_IMAGE);
     const [ deleteImageMutation, {loading: deleting} ] = useMutation(DELETE_IMAGE);
 
     useEffect(() => {
         const user = JSON.parse(sessionStorage.getItem('user') || '{}');
         if (user && user._id) {
-            getImages({variables: {user: user._id}});
+            fetchImages(user)
         } else router.push('/')
     }, []);
+
+    if (error) {
+        console.error('GraphQL error:', error.message);
+        if(error.message?.toLowerCase() === "session expired") {
+            sessionStorage.clear();
+            router.push('/')
+        }
+        toast.error(error.message);
+    }
+
+    const fetchImages = async (user: any) => {
+        try {
+            await getImages({variables: {user: user._id}});
+            console.log('done')
+        } catch(error: any) {
+            console.log('err', error)
+            toast.error(error.message);
+        }
+    }
 
     const uploadImage = async (formData: any) => {
         try {

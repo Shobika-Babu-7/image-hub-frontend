@@ -6,21 +6,26 @@ import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { LOGIN_ACCOUNT } from '../lib/qraphql';
 import toast from 'react-hot-toast';
+import Cookies from 'js-cookie';
 
 export default function SignIn() {
     const router = useRouter()
     const { register, handleSubmit, formState: { errors } } = useForm();
-    const [ createAccountMutation, {loading, error} ] = useMutation(LOGIN_ACCOUNT);
+    const [ loginAccountMutation, {loading, error} ] = useMutation(LOGIN_ACCOUNT);
     
     const signup = async (formData: any) => {
         try {
-            const { data } = await createAccountMutation({
+            const { data } = await loginAccountMutation({
                 variables: {email: formData.email,password: formData.password},
             });
 
             sessionStorage.setItem('token', data.login.accessToken)
             sessionStorage.setItem('user', JSON.stringify(data.login))
-            router.push('/dashboard')
+
+            // Set cookies for token and user data
+            Cookies.set('valid2fa', data.login.authEnabled);
+
+            router.push('/2fa/login')
         } catch(error: any) {
             toast.error(error.message);
         }

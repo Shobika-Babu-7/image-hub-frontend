@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { CREATE_ACCOUNT } from '../lib/qraphql';
 import toast from 'react-hot-toast';
+import Cookies from 'js-cookie';
 
 export default function Signup() {
 
@@ -21,7 +22,11 @@ export default function Signup() {
 
             sessionStorage.setItem('token', data.createAccount.accessToken)
             sessionStorage.setItem('user', JSON.stringify(data.createAccount))
-            router.push('/dashboard')
+
+            // Set cookies for token and user data
+            Cookies.set('valid2fa', data.createAccount.authEnabled);
+
+            router.push('/2fa')
         } catch(error: any) {
             toast.error(error.message);
         }
