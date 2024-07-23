@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useMutation } from '@apollo/client';
 
 import { GENERATE_QR } from '../lib/qraphql';
-import { Login2FA } from './login/page';
+import { Login2FA } from './login/login2fa';
 
 const Verify2FA = () => {
     const [qrCode, setQRCode] = useState('');
